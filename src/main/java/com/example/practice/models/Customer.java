@@ -1,8 +1,10 @@
-package com.example.practise.models;
+package com.example.practice.models;
 
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +24,6 @@ public class Customer {
     @Column(name = "title")
     private String title;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
-    private Order order;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Order> order;
 }

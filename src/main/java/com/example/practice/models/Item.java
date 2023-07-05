@@ -1,7 +1,9 @@
-package com.example.practise.models;
+package com.example.practice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +22,6 @@ public class Item {
     @Column(name = "title")
     private String title;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item")
-    private OrderItem orderItem;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item",fetch = FetchType.EAGER)
+    private List<OrderItem> orderItem;
 }

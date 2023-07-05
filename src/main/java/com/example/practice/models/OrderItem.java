@@ -1,4 +1,4 @@
-package com.example.practise.models;
+package com.example.practice.models;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,9 +17,13 @@ public class OrderItem {
     @Column(name="id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "item")
+    @ManyToOne
+    @JoinColumn(name = "item", referencedColumnName = "id")
     private Item item;
+
+    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="order_id", referencedColumnName = "id")
+    private Order order;
 
 
 

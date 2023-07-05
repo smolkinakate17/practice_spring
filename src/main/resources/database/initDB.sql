@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS public."order"
     id bigint NOT NULL,
     created timestamp without time zone,
     customer bigint,
-    order_items bigint[],
     CONSTRAINT order_pkey PRIMARY KEY (id),
     CONSTRAINT customer FOREIGN KEY (customer)
         REFERENCES public.customer (id) MATCH SIMPLE
@@ -54,9 +53,15 @@ CREATE TABLE IF NOT EXISTS public.order_item
     item bigint,
     price numeric,
     quantity numeric,
+    order_id bigint,
     CONSTRAINT order_item_pkey PRIMARY KEY (id),
     CONSTRAINT item FOREIGN KEY (item)
         REFERENCES public.item (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT order_id FOREIGN KEY (order_id)
+        REFERENCES public."order" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
