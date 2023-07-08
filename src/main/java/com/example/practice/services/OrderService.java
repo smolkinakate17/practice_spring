@@ -11,12 +11,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+
     public List<Order> getAllOrders(){
         return orderRepository.findAll();
     }
+
     public Order getOrderById(Long id){
-        return orderRepository.findById(id).orElse(null);
+      if(orderRepository.existsById(id)){
+          return orderRepository.getReferenceById(id);
+      }
+      else return null;
     }
+
     public void saveOrder(Order order){
         orderRepository.save(order);
     }

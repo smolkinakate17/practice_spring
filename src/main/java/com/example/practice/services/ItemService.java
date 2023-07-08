@@ -1,5 +1,6 @@
 package com.example.practice.services;
 
+import com.example.practice.models.Customer;
 import com.example.practice.models.Item;
 import com.example.practice.repositories.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,20 @@ public class ItemService {
         return itemRepository.findAll();
     }
     public Item getItemById(Long id){
-        return itemRepository.findById(id).orElse(null);
+        if(itemRepository.existsById(id)){
+            return itemRepository.getReferenceById(id);
+        }
+        else return null;
     }
     public void saveItem(Item item){
         itemRepository.save(item);
+    }
+
+    public void updateItem(Item newItem){
+        Long id = newItem.getId();
+        Item oldItem=itemRepository.getReferenceById(id);
+        oldItem.setTitle(newItem.getTitle());
+        itemRepository.save(oldItem);
     }
 
 }

@@ -1,39 +1,66 @@
 package com.example.practice.models;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 
 @Entity
-@Table(name = "order")
+@Table(name = "myorder")
 public class Order {
+
     @Id
-    @Column(name="id")
+    @Column(name="order_id")
     private Long id;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created")
-    private Date createDate;
+    private LocalDateTime createDate;
 
 
-    @ManyToOne(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer", referencedColumnName = "id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName = "user_id")
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderItem> items;
 
+    public Order(Long id,LocalDateTime createDate,Customer customer){
+        this.id=id;
+        this.createDate=createDate;
+        this.customer=customer;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order order)) return false;
+        return Objects.equals(getId(), order.getId());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCreateDate(), getCustomer());
+    }
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", createDate=" + createDate +
+                ", customer=" + customer +
+                ", items=" + items +
+                '}';
+    }
 }
