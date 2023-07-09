@@ -21,4 +21,8 @@ public class OrderItemService {
         orderItemRepository.save(orderItem);
     }
 
+    public List<OrderItem> findByOrderId(Long id){
+        return orderItemRepository.findAllByOrder_Id(id);
+    }
+
 }

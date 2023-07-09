@@ -10,9 +10,10 @@ public class CustomerCreatingOrderDTO {
 
     private final String customerTitle;
 
+
     @JsonCreator
     public CustomerCreatingOrderDTO(@JsonProperty("id") Long customerId,
-                                    @JsonProperty("title") String customerTitle) {
+                                    @JsonProperty("title") String customerTitle){
         this.customerId = customerId;
         this.customerTitle = customerTitle;
     }

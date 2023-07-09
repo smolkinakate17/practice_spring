@@ -1,7 +1,6 @@
 package com.example.practice.controllers;
 
-import com.example.practice.dto.CreatingOrderDTO;
-import com.example.practice.dto.OrderItemCreatingOrderDTO;
+import com.example.practice.dto.*;
 import com.example.practice.models.Customer;
 import com.example.practice.models.Item;
 import com.example.practice.models.Order;
@@ -11,17 +10,11 @@ import com.example.practice.services.ItemService;
 import com.example.practice.services.OrderItemService;
 import com.example.practice.services.OrderService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 
-public class OrderController {
+public class CreateOrderController {
     private final OrderService orderService;
     private final CustomerService customerService;
     private final ItemService itemService;
@@ -37,8 +30,8 @@ public class OrderController {
 
 
 
-    @PostMapping("/creating")
-    public String addOrder(@RequestBody CreatingOrderDTO creatingOrderDTO) {
+    @PostMapping("/order")
+    public ResponseEntity<MessageDTO> addOrder(@RequestBody CreatingOrderDTO creatingOrderDTO) {
         //customer from dto
         Customer customer=new Customer(creatingOrderDTO.getCustomer().getCustomerId(),creatingOrderDTO.getCustomer().getCustomerTitle());
         //order from dto and order->customer
@@ -91,7 +84,11 @@ public class OrderController {
         }
 
         if(orderService.getOrderById(order.getId())!=null){
-            //exception 400
+            MessageDTO messageDTO=new MessageDTO();
+
+            messageDTO.setSuccess(false);
+            messageDTO.setMessage("Заказ с id = "+ order.getId()+ " уже существует.");
+            return new ResponseEntity<>(messageDTO,HttpStatus.OK);
         }
         else{
 
@@ -115,29 +112,17 @@ public class OrderController {
 
         //я не знаю как но заказчик и заказ тоже сохраняются. Возможно из-за связей между ними
 
+        MessageDTO messageDTO=new MessageDTO();
+
+        messageDTO.setSuccess(true);
+        messageDTO.setMessage(null);
 
 
 
-        return "ok";
+       return new ResponseEntity<>(messageDTO,HttpStatus.OK);
     }
 
-    @GetMapping("/find/{id}")
-    public String findOrder(@PathVariable Long id){
-        Order order=orderService.getOrderById(id);
-        return "ok";
-    }
 
-    @PostMapping("/customer")
-    public String addCustomer(@RequestBody Customer customer){
 
-        customerService.saveCustomer(customer);
-        return "ok";
-//        return ResponseEntity.ok(customer);
-    }
-    @PostMapping("/order")
-    public ResponseEntity<Order> addOrder(@RequestBody Order order){
-        //orderService.saveOrder(order);
-        return ResponseEntity.ok(order);
-    }
 
 }
