@@ -33,7 +33,7 @@ public class OrderItem {
     private double quantity;
 
 
-    @ManyToOne (cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name="order_id", referencedColumnName = "order_id")
     private Order order;
 

@@ -25,4 +25,11 @@ public class OrderItemService {
         return orderItemRepository.findAllByOrder_Id(id);
     }
 
+    public List<OrderItem> findByItemId(Long id){
+        return orderItemRepository.findAllByItem_Id(id);
+    }
+    public OrderItem findByItemIdAndOrderId(Long itemId,Long orderId){
+        return orderItemRepository.findAllByItem_IdAndOrder_Id(itemId, orderId);
+    }
+
 }

@@ -24,6 +24,7 @@ public class Order {
     @Column(name="order_id")
     private Long id;
 
+
     @Column(name = "created")
     private LocalDateTime createDate;
 
@@ -60,7 +61,6 @@ public class Order {
                 "id=" + id +
                 ", createDate=" + createDate +
                 ", customer=" + customer +
-                ", items=" + items +
                 '}';
     }
 }
