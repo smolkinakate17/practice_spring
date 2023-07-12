@@ -14,4 +14,8 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     @Query("select o from Order o where year (o.createDate)=?1 and month (o.createDate)=?2 and o.customer.id=?3")
     List<Order>findAllByCreateDate_YearAndCreateDate_MonthValueAAndAndCustomer_Id(int year,int month,Long id);
+
+    @Query("select distinct year (o.createDate) from Order o join OrderItem i on o.id=i.order.id where i.item.id=?1")
+    List<Integer>findYearsByItem_id(Long id);
+
 }

@@ -4,6 +4,7 @@ import com.example.practice.dto.AnswerAbcXyzDataDTO;
 import com.example.practice.dto.AnswerDynamicDataDTO;
 import com.example.practice.models.OrderItem;
 import com.example.practice.repositories.OrderItemRepository;
+import com.example.practice.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderItemService {
     private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
     public List<OrderItem> getAllOrderItems(){
         return orderItemRepository.findAll();
     }
@@ -167,5 +169,67 @@ public class OrderItemService {
         return answerList;
 
     }
+
+    public List<Double> salesLevels(Long itemId){
+
+        List<Integer>years=orderRepository.findYearsByItem_id(itemId);
+        List<Double> levels=new ArrayList<>();
+        for(int m=1;m<13;m++){
+            double sum=0;
+            for(Integer year:years){
+                List<OrderItem> orderItemList=findByItemIdAndYearMonth(itemId, year,m);
+                for(OrderItem orderItem:orderItemList){
+                    sum+=orderItem.getPrice()*orderItem.getQuantity();
+                }
+            }
+            if(years.isEmpty()){
+                levels.add(sum);
+            }
+            else{
+                levels.add(sum/years.size());
+            }
+
+
+        }
+
+
+        return levels;
+
+    }
+   public List<Double> seasonCoeff(Long itemId){
+        List<Integer>years=orderRepository.findYearsByItem_id(itemId);
+        List<Double>sumYear=new ArrayList<>();
+        List<Double> result=new ArrayList<>();
+        for (int year : years){
+            double sum=0;
+            List<OrderItem> orderItemList=orderItemRepository.findByYearAndItem_id(year,itemId);
+            for(OrderItem orderItem:orderItemList){
+                sum+=orderItem.getPrice()*orderItem.getQuantity();
+            }
+            sumYear.add(sum);
+        }
+        for(int m=1;m<13;m++){
+            double sum=0;
+            for(Integer year:years){
+                double sumOneYear=0;
+                List<OrderItem> orderItemList=findByItemIdAndYearMonth(itemId, year,m);
+                for(OrderItem orderItem:orderItemList){
+                    sumOneYear+=orderItem.getPrice()*orderItem.getQuantity();
+                }
+                int index=years.indexOf(year);
+                double yearCoeff=sumYear.get(index);
+                sumOneYear=sumOneYear/yearCoeff;
+                sum+=sumOneYear;
+            }
+            if(years.isEmpty()){
+                result.add(sum);
+            }
+            else{
+                result.add(sum/ years.size()*100);
+            }
+
+        }
+        return result;
+   }
 
 }
